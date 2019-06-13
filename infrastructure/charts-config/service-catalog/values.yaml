@@ -1,0 +1,6 @@
+
+apiserver:
+  service:
+    type: ClusterIP
+  auth:
+    enabled: true

@@ -10,6 +10,7 @@ tasks:
     dir: infrastructure
     cmds:
       - helmfile --selector name=istio template > manifests/istio.yaml
+      - helmfile --selector name=service-catalog template > manifests/service-catalog.yaml
   install-istio:
     desc: install istio service mesh
     dir: infrastructure
@@ -33,3 +34,9 @@ tasks:
       - kubectl delete --wait=true -f manifests/knative-serving-policy.yaml
       - kubectl delete --wait=true --selector knative.dev/crd-install!=true -f manifests/knative-serving.yaml
       - kubectl delete --wait=true --selector knative.dev/crd-install=true -f manifests/knative-serving.yaml
+  install-olm:
+    desc: uninstall open lifecycle-manager
+    dir: infrastructure
+    cmds:
+      - kubectl apply --wait=true -f https://github.com/operator-framework/operator-lifecycle-manager/releases/download/0.10.0/crds.yaml
+      - kubectl apply --wait=true -f https://github.com/operator-framework/operator-lifecycle-manager/releases/download/0.10.0/olm.yaml

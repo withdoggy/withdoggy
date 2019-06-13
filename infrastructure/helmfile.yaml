@@ -1,6 +1,8 @@
 repositories:
   - name: istio
     url: https://storage.googleapis.com/istio-release/releases/1.1.8/charts
+  - name: svc-cat
+    url: https://svc-catalog-charts.storage.googleapis.com
 releases:
   - name: istio
     chart: istio/istio
@@ -9,3 +11,9 @@ releases:
     values:
       - charts-config/istio/values.yaml
       - charts-config/istio/{{ env "PLATFORM_ENV" }}.yaml
+  - name: service-catalog
+    namespace: catalog
+    chart: svc-cat/catalog
+    version: 0.2.1
+    values:
+      - charts-config/service-catalog/values.yaml
