@@ -1,0 +1,35 @@
+version: '2'
+tasks:
+  start-minikube:
+    desc: Start minikube for local development
+    cmds:
+     - minikube start --memory=8192 --cpus=4 --vm-driver=hyperkit --disk-size=30g
+    silent: false
+  charts-templates:
+    desc: Generate k8s manifests based on helm charts
+    dir: infrastructure
+    cmds:
+      - helmfile --selector name=istio template > manifests/istio.yaml
+  install-istio:
+    desc: install istio service mesh
+    dir: infrastructure
+    deps: [charts-templates]
+    cmds:
+      - kubectl apply --wait=true -f https://raw.githubusercontent.com/istio/istio/master/install/kubernetes/namespace.yaml
+      - kubectl apply --wait=true -f https://raw.githubusercontent.com/istio/istio/1.1.8/install/kubernetes/helm/istio-init/files/crd-10.yaml
+      - kubectl apply --wait=true -f https://raw.githubusercontent.com/istio/istio/1.1.8/install/kubernetes/helm/istio-init/files/crd-11.yaml
+      - kubectl apply --wait=true -f ./manifests/istio.yaml
+  install-knative-serving:
+    desc: install knative serverless stack
+    dir: infrastructure
+    cmds:
+      - kubectl apply --wait=true --selector knative.dev/crd-install=true -f manifests/knative-serving.yaml
+      - kubectl apply --wait=true --selector knative.dev/crd-install!=true -f manifests/knative-serving.yaml
+      - kubectl apply --wait=true -f manifests/knative-serving-policy.yaml
+  remove-knative-serving:
+    desc: uninstall knative serving
+    dir: infrastructure
+    cmds:
+      - kubectl delete --wait=true -f manifests/knative-serving-policy.yaml
+      - kubectl delete --wait=true --selector knative.dev/crd-install!=true -f manifests/knative-serving.yaml
+      - kubectl delete --wait=true --selector knative.dev/crd-install=true -f manifests/knative-serving.yaml

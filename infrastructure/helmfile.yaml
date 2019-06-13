@@ -1,0 +1,11 @@
+repositories:
+  - name: istio
+    url: https://storage.googleapis.com/istio-release/releases/1.1.8/charts
+releases:
+  - name: istio
+    chart: istio/istio
+    version: 1.1.8
+    namespace: istio-system
+    values:
+      - charts-config/istio/values.yaml
+      - charts-config/istio/{{ env "PLATFORM_ENV" }}.yaml

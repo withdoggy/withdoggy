@@ -1,0 +1,23 @@
+global:
+  proxy:
+    autoInject: disabled
+  disablePolicyChecks: false
+  mtls:
+    enabled: true
+gateways:
+  istio-ingressgateway:
+    sds:
+      enabled: true
+  istio-egressgateway:
+    enabled: false
+grafana:
+  enabled: false
+tracing:
+  enabled: true
+prometheus:
+  enabled: false
+kiali:
+  enabled: true
+sidecarInjectorWebhook:
+  enabled: true
+  enableNamespacesByDefault: true
